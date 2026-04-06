@@ -1,0 +1,6 @@
+POST https://nnsj0jn6aj.execute-api.us-east-1.amazonaws.com/dev/blog-generation
+Content-Type: application/json
+
+{
+  "blog_topic": "AI in healthcare"
+}

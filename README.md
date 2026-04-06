@@ -10,22 +10,26 @@ This project accepts a blog topic, generates a detailed blog post using a Bedroc
 - Uses Amazon Bedrock (`meta.llama3-8b-instruct-v1:0`) for text generation
 - Saves generated output to S3 with timestamped file names
 - Exposes a REST endpoint through API Gateway
+- Includes a simple browser UI to generate and display blogs
 
 ## Project Structure
 
 - `app.py` - Lambda handler and business logic
 - `request.http` - Sample request to test deployed API
+- `ui/index.html` - Frontend page to generate and display blog content
 
 ## Architecture
 
 ```mermaid
 flowchart LR
-    U[Client / HTTP Request] --> APIGW[Amazon API Gateway]
+    UI[Browser UI] --> APIGW[Amazon API Gateway]
+    U[Client / HTTP Request] --> APIGW
     APIGW --> L[Lambda: lambda_handler]
     L --> B[Amazon Bedrock Runtime]
     B --> L
     L --> S3[Amazon S3 bucket: mj-blog-posts-bucket]
     L --> APIGW
+    APIGW --> UI
     APIGW --> U
 ```
 
@@ -110,6 +114,16 @@ curl -X POST "https://<your-api-id>.execute-api.us-east-1.amazonaws.com/dev/blog
   -d "{\"blog_topic\":\"AI in healthcare\"}"
 ```
 
+### 3) Using Browser UI
+
+1. Open `ui/index.html` in your browser.
+2. Confirm API endpoint URL is correct.
+3. Enter a blog topic.
+4. Click `Generate Blog`.
+5. Generated content is displayed directly in the UI.
+
+If browser calls fail due to CORS, redeploy updated `app.py` (it now includes CORS headers and `OPTIONS` preflight support).
+
 ## Expected Response
 
 ```json
@@ -126,6 +140,11 @@ If `blog_topic` is missing:
   "error": "blog_topic is required"
 }
 ```
+
+## Screenshot
+
+<img width="1421" height="946" alt="image" src="https://github.com/user-attachments/assets/46b7bcd6-2e2c-42c2-9d56-4f0d1db88d49" />
+
 
 ## Notes and Improvements
 
